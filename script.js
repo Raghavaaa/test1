@@ -19,6 +19,7 @@ const candidateNameInput = document.getElementById('candidateName');
 const mobileNumberInput = document.getElementById('mobileNumber');
 const cgpaInput = document.getElementById('cgpa');
 const branchInput = document.getElementById('branch');
+const techStackInput = document.getElementById('techStack');
 const mobileError = document.getElementById('mobileError');
 
 // Validate mobile number
@@ -62,6 +63,7 @@ startTestBtn.addEventListener('click', () => {
     const mobile = mobileNumberInput.value.trim();
     const cgpa = cgpaInput.value.trim();
     const branch = branchInput.value.trim();
+    const techStack = techStackInput.value.trim();
 
     // Validate inputs
     if (!name) {
@@ -81,6 +83,11 @@ startTestBtn.addEventListener('click', () => {
 
     if (!branch) {
         alert('Please enter your branch/stream');
+        return;
+    }
+
+    if (!techStack) {
+        alert('Please enter your tech stack/skills');
         return;
     }
 
@@ -125,6 +132,7 @@ async function submitTest(autoSubmit) {
         mobile: mobileNumberInput.value.trim(),
         cgpa: cgpaInput.value.trim(),
         branch: branchInput.value.trim(),
+        tech_stack: techStackInput.value.trim(),
         answers: answers,
         submission_time: new Date().toISOString(),
         time_taken_seconds: TEST_DURATION - timeRemaining

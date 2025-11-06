@@ -31,13 +31,14 @@ class TestSubmission(BaseModel):
     mobile: str
     cgpa: str
     branch: str
+    tech_stack: str
     answers: Dict[str, str]
     submission_time: str
     time_taken_seconds: int = 0
 
 # CSV file path
 CSV_FILE = "results.csv"
-CSV_HEADERS = ["name", "mobile", "cgpa", "branch", "submission_time", "time_taken_seconds", "Q1", "Q2", "Q3", "Q4", "Q5"]
+CSV_HEADERS = ["name", "mobile", "cgpa", "branch", "tech_stack", "submission_time", "time_taken_seconds", "Q1", "Q2", "Q3", "Q4", "Q5"]
 
 # Initialize CSV file if it doesn't exist
 def init_csv():
@@ -114,6 +115,7 @@ async def submit_test(submission: TestSubmission):
                 submission.mobile,
                 submission.cgpa,
                 submission.branch,
+                submission.tech_stack,
                 submission.submission_time,
                 submission.time_taken_seconds,
                 submission.answers.get("Q1", ""),
