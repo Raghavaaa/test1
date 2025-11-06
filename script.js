@@ -1,6 +1,6 @@
 // ⚠️ IMPORTANT: After deploying backend, replace this URL with your backend URL
 // Example: const BACKEND_URL = "https://your-backend-name.onrender.com/submit";
-const BACKEND_URL = "REPLACE_WITH_YOUR_BACKEND_URL/submit";
+const BACKEND_URL = "https://test1-w8i5.onrender.com/submit";
 
 // State
 let testStartTime;
