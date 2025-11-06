@@ -17,6 +17,8 @@ const testForm = document.getElementById('testForm');
 const timerDisplay = document.getElementById('timerDisplay');
 const candidateNameInput = document.getElementById('candidateName');
 const mobileNumberInput = document.getElementById('mobileNumber');
+const cgpaInput = document.getElementById('cgpa');
+const branchInput = document.getElementById('branch');
 const mobileError = document.getElementById('mobileError');
 
 // Validate mobile number
@@ -58,6 +60,8 @@ function updateTimer() {
 startTestBtn.addEventListener('click', () => {
     const name = candidateNameInput.value.trim();
     const mobile = mobileNumberInput.value.trim();
+    const cgpa = cgpaInput.value.trim();
+    const branch = branchInput.value.trim();
 
     // Validate inputs
     if (!name) {
@@ -67,6 +71,16 @@ startTestBtn.addEventListener('click', () => {
 
     if (!validateMobileNumber(mobile)) {
         mobileError.textContent = 'Please enter a valid 10-digit mobile number';
+        return;
+    }
+
+    if (!cgpa || parseFloat(cgpa) < 0 || parseFloat(cgpa) > 10) {
+        alert('Please enter a valid CGPA between 0 and 10');
+        return;
+    }
+
+    if (!branch) {
+        alert('Please enter your branch/stream');
         return;
     }
 
@@ -109,6 +123,8 @@ async function submitTest(autoSubmit) {
     const submissionData = {
         name: candidateNameInput.value.trim(),
         mobile: mobileNumberInput.value.trim(),
+        cgpa: cgpaInput.value.trim(),
+        branch: branchInput.value.trim(),
         answers: answers,
         submission_time: new Date().toISOString(),
         time_taken_seconds: TEST_DURATION - timeRemaining

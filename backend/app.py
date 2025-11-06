@@ -29,13 +29,15 @@ app.add_middleware(
 class TestSubmission(BaseModel):
     name: str
     mobile: str
+    cgpa: str
+    branch: str
     answers: Dict[str, str]
     submission_time: str
     time_taken_seconds: int = 0
 
 # CSV file path
 CSV_FILE = "results.csv"
-CSV_HEADERS = ["name", "mobile", "submission_time", "time_taken_seconds", "Q1", "Q2", "Q3", "Q4", "Q5"]
+CSV_HEADERS = ["name", "mobile", "cgpa", "branch", "submission_time", "time_taken_seconds", "Q1", "Q2", "Q3", "Q4", "Q5"]
 
 # Initialize CSV file if it doesn't exist
 def init_csv():
@@ -110,6 +112,8 @@ async def submit_test(submission: TestSubmission):
             writer.writerow([
                 submission.name,
                 submission.mobile,
+                submission.cgpa,
+                submission.branch,
                 submission.submission_time,
                 submission.time_taken_seconds,
                 submission.answers.get("Q1", ""),

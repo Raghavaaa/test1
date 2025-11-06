@@ -432,7 +432,7 @@
                 </label>
             </div>
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="🔍 Search by name or mobile..." onkeyup="filterTable()">
+                <input type="text" id="searchInput" placeholder="🔍 Search by name, mobile, CGPA, or branch..." onkeyup="filterTable()">
             </div>
         </div>
 
@@ -448,8 +448,10 @@
                             <th class="sortable" onclick="sortTable(0)">#</th>
                             <th class="sortable" onclick="sortTable(1)">Name</th>
                             <th class="sortable" onclick="sortTable(2)">Mobile</th>
-                            <th class="sortable" onclick="sortTable(3)">Submission Time</th>
-                            <th class="sortable" onclick="sortTable(4)">Time Taken</th>
+                            <th class="sortable" onclick="sortTable(3)">CGPA</th>
+                            <th class="sortable" onclick="sortTable(4)">Branch</th>
+                            <th class="sortable" onclick="sortTable(5)">Submission Time</th>
+                            <th class="sortable" onclick="sortTable(6)">Time Taken</th>
                             <th>Answers</th>
                         </tr>
                     </thead>
@@ -559,6 +561,8 @@
                         <td>${index + 1}</td>
                         <td><strong>${result.name}</strong></td>
                         <td>${result.mobile}</td>
+                        <td>${result.cgpa || 'N/A'}</td>
+                        <td>${result.branch || 'N/A'}</td>
                         <td>${formattedDate}</td>
                         <td><span class="time-badge">${timeTaken}</span></td>
                         <td>
@@ -634,7 +638,9 @@
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allResults.filter(result => 
                 result.name.toLowerCase().includes(searchTerm) || 
-                result.mobile.includes(searchTerm)
+                result.mobile.includes(searchTerm) ||
+                (result.branch && result.branch.toLowerCase().includes(searchTerm)) ||
+                (result.cgpa && result.cgpa.toString().includes(searchTerm))
             );
             renderTable(filtered);
         }
@@ -679,11 +685,19 @@
                         aVal = a.mobile;
                         bVal = b.mobile;
                         break;
-                    case 3: // Submission time
+                    case 3: // CGPA
+                        aVal = parseFloat(a.cgpa) || 0;
+                        bVal = parseFloat(b.cgpa) || 0;
+                        break;
+                    case 4: // Branch
+                        aVal = a.branch || '';
+                        bVal = b.branch || '';
+                        break;
+                    case 5: // Submission time
                         aVal = new Date(a.submission_time);
                         bVal = new Date(b.submission_time);
                         break;
-                    case 4: // Time taken
+                    case 6: // Time taken
                         aVal = parseInt(a.time_taken_seconds) || 0;
                         bVal = parseInt(b.time_taken_seconds) || 0;
                         break;
