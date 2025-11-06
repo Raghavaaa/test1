@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weyou Frontend Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #userInput {
+            padding: 10px;
+            width: 200px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+        }
+        /* BUG: Wrong class name */
+        .btn-submit {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-submit:hover {
+            background: #5568d3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            /* BUG: Wrong property name */
+            dispaly: none;
+        }
+        .success {
+            background: #d4edda !important;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Frontend Challenge</h1>
+        <p>Enter the magic number between 1-100:</p>
+        <input type="text" id="userInput" placeholder="Enter number">
+        <!-- BUG: Wrong ID -->
+        <button class="btn-submitt" onclick="checkAnswer()">Submit</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // BUG: Wrong comparison operator
+        const MAGIC_NUMBER = 42;
+        const SECRET_CODE = "WFR2025FE";
+
+        function checkAnswer() {
+            const input = document.getElementByID("userInput").value;  // BUG: Wrong method name
+            const number = parseInt(input);
+            const resultDiv = document.getElementById("result");
+
+            // BUG: Assignment instead of comparison
+            if (number = MAGIC_NUMBER) {
+                resultDiv.style.display = "block";
+                resultDiv.className = "success";
+                resultDiv.innerHTML = `
+                    <h2>🎉 Congratulations!</h2>
+                    <p>You fixed all the bugs!</p>
+                    <h3>Your Answer Code:</h3>
+                    <h1 style="color: #667eea; font-size: 32px;">${SECRET_CODE}</h1>
+                    <p style="font-size: 14px; color: #666;">Submit this code to complete the test</p>
+                `;
+            } else {
+                resultDiv.style.display = "block";
+                resultDiv.className = "";
+                resultDiv.innerHTML = `<p>❌ Try again! Hint: The answer to life, universe, and everything...</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
+
