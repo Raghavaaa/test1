@@ -165,7 +165,7 @@ async def submit_answer(submission: AnswerSubmission):
 @app.get("/results")
 async def get_results():
     """
-    Get all submissions
+    Get all submissions with time taken calculations
     """
     try:
         results = []
@@ -175,6 +175,22 @@ async def get_results():
                 reader = csv.DictReader(f)
                 results = list(reader)
         
+        # Calculate time taken for each submission
+        for result in results:
+            try:
+                reg_time = datetime.fromisoformat(result['registration_time'].replace('Z', '+00:00'))
+                sub_time = datetime.fromisoformat(result['submission_time'].replace('Z', '+00:00'))
+                time_diff = (sub_time - reg_time).total_seconds()
+                
+                # Format time
+                minutes = int(time_diff // 60)
+                seconds = int(time_diff % 60)
+                result['time_taken'] = f"{minutes}m {seconds}s"
+                result['time_taken_seconds'] = int(time_diff)
+            except Exception:
+                result['time_taken'] = "Unknown"
+                result['time_taken_seconds'] = 0
+        
         # Sort by submission time
         results.sort(key=lambda x: x.get('submission_time', ''), reverse=True)
         
@@ -183,13 +199,26 @@ async def get_results():
         passed = len([r for r in results if r.get('is_correct') == 'PASS'])
         failed = total - passed
         
+        # Calculate average time for passed candidates
+        passed_times = [r['time_taken_seconds'] for r in results if r.get('is_correct') == 'PASS' and r.get('time_taken_seconds', 0) > 0]
+        avg_time_seconds = sum(passed_times) / len(passed_times) if passed_times else 0
+        avg_minutes = int(avg_time_seconds // 60)
+        avg_seconds = int(avg_time_seconds % 60)
+        
+        # Find fastest
+        fastest_time = min(passed_times) if passed_times else 0
+        fastest_minutes = int(fastest_time // 60)
+        fastest_seconds = int(fastest_time % 60)
+        
         return {
             "status": "success",
             "stats": {
                 "total_submissions": total,
                 "passed": passed,
                 "failed": failed,
-                "pass_rate": f"{(passed/total*100):.1f}%" if total > 0 else "0%"
+                "pass_rate": f"{(passed/total*100):.1f}%" if total > 0 else "0%",
+                "avg_time": f"{avg_minutes}m {avg_seconds}s",
+                "fastest_time": f"{fastest_minutes}m {fastest_seconds}s"
             },
             "results": results
         }
