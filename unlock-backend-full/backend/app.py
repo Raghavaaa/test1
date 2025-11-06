@@ -1,0 +1,219 @@
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import Optional
+import csv
+import os
+from datetime import datetime
+
+app = FastAPI(title="Backend Unlock Challenge API")
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Data models
+class CandidateRegistration(BaseModel):
+    name: str
+    mobile: str
+    email: str
+    branch: str
+    cgpa: str
+    interests: str
+    availability: str
+    registration_time: str
+
+class AnswerSubmission(BaseModel):
+    name: str
+    mobile: str
+    email: str
+    branch: str
+    cgpa: str
+    interests: str
+    availability: str
+    registration_time: str
+    answer_code: str
+    submission_time: str
+
+# CSV files
+REGISTRATIONS_FILE = "registrations.csv"
+SUBMISSIONS_FILE = "submissions.csv"
+CORRECT_ANSWER = "WBK2025BE"
+
+# CSV headers
+REGISTRATION_HEADERS = ["name", "mobile", "email", "branch", "cgpa", "interests", "availability", "registration_time"]
+SUBMISSION_HEADERS = ["name", "mobile", "email", "branch", "cgpa", "interests", "availability", "registration_time", "answer_code", "submission_time", "is_correct"]
+
+# Initialize CSV files
+def init_csv():
+    if not os.path.exists(REGISTRATIONS_FILE):
+        with open(REGISTRATIONS_FILE, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(REGISTRATION_HEADERS)
+    
+    if not os.path.exists(SUBMISSIONS_FILE):
+        with open(SUBMISSIONS_FILE, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(SUBMISSION_HEADERS)
+
+init_csv()
+
+@app.get("/")
+def read_root():
+    return {
+        "message": "Backend Unlock Challenge API",
+        "status": "running",
+        "correct_answer": "Hidden until candidate completes test",
+        "endpoints": {
+            "register": "/register (POST)",
+            "submit": "/submit (POST)",
+            "results": "/results (GET)",
+            "registrations": "/registrations (GET)"
+        }
+    }
+
+@app.post("/register")
+async def register_candidate(registration: CandidateRegistration):
+    """Register a new candidate"""
+    try:
+        # Check for duplicate mobile
+        existing = []
+        with open(REGISTRATIONS_FILE, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            existing = list(reader)
+        
+        for row in existing:
+            if row['mobile'] == registration.mobile:
+                raise HTTPException(
+                    status_code=400,
+                    detail="This mobile number is already registered"
+                )
+        
+        # Save registration
+        with open(REGISTRATIONS_FILE, 'a', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                registration.name,
+                registration.mobile,
+                registration.email,
+                registration.branch,
+                registration.cgpa,
+                registration.interests,
+                registration.availability,
+                registration.registration_time
+            ])
+        
+        return {
+            "status": "success",
+            "message": "Registration successful",
+            "data": {
+                "name": registration.name,
+                "mobile": registration.mobile
+            }
+        }
+    
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
+
+@app.post("/submit")
+async def submit_answer(submission: AnswerSubmission):
+    """Submit answer code"""
+    try:
+        # Check if answer is correct
+        is_correct = submission.answer_code.upper() == CORRECT_ANSWER
+        
+        # Save submission
+        with open(SUBMISSIONS_FILE, 'a', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                submission.name,
+                submission.mobile,
+                submission.email,
+                submission.branch,
+                submission.cgpa,
+                submission.interests,
+                submission.availability,
+                submission.registration_time,
+                submission.answer_code,
+                submission.submission_time,
+                "PASS" if is_correct else "FAIL"
+            ])
+        
+        return {
+            "status": "success",
+            "message": "Answer submitted successfully",
+            "is_correct": is_correct,
+            "data": {
+                "name": submission.name,
+                "answer_code": submission.answer_code,
+                "result": "PASS" if is_correct else "FAIL"
+            }
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
+
+@app.get("/results")
+async def get_results():
+    """Get all submissions"""
+    try:
+        results = []
+        
+        if os.path.exists(SUBMISSIONS_FILE):
+            with open(SUBMISSIONS_FILE, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                results = list(reader)
+        
+        # Sort by submission time
+        results.sort(key=lambda x: x.get('submission_time', ''), reverse=True)
+        
+        # Count stats
+        total = len(results)
+        passed = len([r for r in results if r.get('is_correct') == 'PASS'])
+        failed = total - passed
+        
+        return {
+            "status": "success",
+            "stats": {
+                "total_submissions": total,
+                "passed": passed,
+                "failed": failed,
+                "pass_rate": f"{(passed/total*100):.1f}%" if total > 0 else "0%"
+            },
+            "results": results
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+@app.get("/registrations")
+async def get_registrations():
+    """Get all registrations"""
+    try:
+        registrations = []
+        
+        if os.path.exists(REGISTRATIONS_FILE):
+            with open(REGISTRATIONS_FILE, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                registrations = list(reader)
+        
+        return {
+            "status": "success",
+            "count": len(registrations),
+            "registrations": registrations
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+

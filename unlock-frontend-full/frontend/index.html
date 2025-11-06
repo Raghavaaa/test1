@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Unlock Challenge - Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-section {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .success-section.active {
+            display: block;
+        }
+
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .download-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #667eea;
+        }
+
+        .download-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .btn-download {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 10px 0;
+            transition: background 0.3s;
+        }
+
+        .btn-download:hover {
+            background: #5568d3;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .instructions h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            color: #856404;
+        }
+
+        .instructions li {
+            margin: 8px 0;
+        }
+
+        .answer-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            border: 2px solid #4caf50;
+        }
+
+        .answer-section h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .answer-section input {
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Frontend Unlock Challenge</h1>
+            <p>Weyou Internship Screening Test</p>
+        </div>
+
+        <div class="content">
+            <!-- Registration Form -->
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label>Full Name <span class="required">*</span></label>
+                    <input type="text" id="name" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Mobile Number <span class="required">*</span></label>
+                        <input type="tel" id="mobile" required placeholder="10-digit number" maxlength="10">
+                        <span class="error-message" id="mobileError">Please enter a valid 10-digit number</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email ID <span class="required">*</span></label>
+                        <input type="email" id="email" required placeholder="your.email@example.com">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Branch/Stream <span class="required">*</span></label>
+                        <input type="text" id="branch" required placeholder="e.g., Computer Science">
+                    </div>
+
+                    <div class="form-group">
+                        <label>CGPA <span class="required">*</span></label>
+                        <input type="number" id="cgpa" step="0.01" min="0" max="10" required placeholder="e.g., 8.5">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Interests/Tech Stack <span class="required">*</span></label>
+                    <textarea id="interests" required placeholder="e.g., React, JavaScript, UI/UX Design, Frontend Development"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Availability in Next 15 Days <span class="required">*</span></label>
+                    <select id="availability" required>
+                        <option value="">Select your availability</option>
+                        <option value="Immediately">Immediately</option>
+                        <option value="Within 1 week">Within 1 week</option>
+                        <option value="Within 2 weeks">Within 2 weeks</option>
+                        <option value="After 15 days">After 15 days</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    Register & Access Test
+                </button>
+            </form>
+
+            <!-- Success Section -->
+            <div class="success-section" id="successSection">
+                <div class="success-icon">✅</div>
+                <h2>Registration Successful!</h2>
+                <p style="color: #666; margin: 15px 0;">Welcome, <span id="candidateName"></span>!</p>
+
+                <div class="download-card">
+                    <h3>📥 Download Test File</h3>
+                    <p style="margin-bottom: 15px;">Click below to download the broken HTML file:</p>
+                    <a href="broken_webpage.html" download="broken_webpage.html" class="btn-download">
+                        ⬇️ Download broken_webpage.html
+                    </a>
+                </div>
+
+                <div class="instructions">
+                    <h4>📋 Instructions:</h4>
+                    <ol>
+                        <li>Download the HTML file above</li>
+                        <li>Open it in your code editor</li>
+                        <li>Find and fix all 5 bugs (HTML, CSS, JavaScript)</li>
+                        <li>Open your fixed file in a browser</li>
+                        <li>Enter the magic number (hint: famous sci-fi number)</li>
+                        <li>Copy the answer code that appears</li>
+                        <li>Submit the answer code below</li>
+                    </ol>
+                    <p style="margin-top: 15px;"><strong>Time Limit: 30 minutes</strong></p>
+                </div>
+
+                <div class="answer-section">
+                    <h3>🔓 Submit Answer Code</h3>
+                    <input type="text" id="answerCode" placeholder="Enter the answer code you discovered" style="text-transform: uppercase;">
+                    <button onclick="submitAnswer()" class="btn-primary">Submit Answer Code</button>
+                    <span class="error-message" id="answerError">Please enter the answer code</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND_URL = "REPLACE_WITH_YOUR_BACKEND_URL";
+
+        const form = document.getElementById('registrationForm');
+        const successSection = document.getElementById('successSection');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Validate mobile
+            const mobile = document.getElementById('mobile').value;
+            if (!/^\d{10}$/.test(mobile)) {
+                document.getElementById('mobileError').classList.add('show');
+                return;
+            }
+
+            // Collect data
+            const formData = {
+                name: document.getElementById('name').value,
+                mobile: mobile,
+                email: document.getElementById('email').value,
+                branch: document.getElementById('branch').value,
+                cgpa: document.getElementById('cgpa').value,
+                interests: document.getElementById('interests').value,
+                availability: document.getElementById('availability').value,
+                registration_time: new Date().toISOString()
+            };
+
+            try {
+                // Send to backend
+                const response = await fetch(`${BACKEND_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    // Show success section
+                    form.style.display = 'none';
+                    successSection.classList.add('active');
+                    document.getElementById('candidateName').textContent = formData.name;
+                    
+                    // Store for later
+                    sessionStorage.setItem('candidateData', JSON.stringify(formData));
+                } else {
+                    alert('Error registering. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Still show test if backend fails
+                form.style.display = 'none';
+                successSection.classList.add('active');
+                document.getElementById('candidateName').textContent = formData.name;
+                sessionStorage.setItem('candidateData', JSON.stringify(formData));
+            }
+        });
+
+        async function submitAnswer() {
+            const answerCode = document.getElementById('answerCode').value.trim().toUpperCase();
+            
+            if (!answerCode) {
+                document.getElementById('answerError').classList.add('show');
+                return;
+            }
+
+            const candidateData = JSON.parse(sessionStorage.getItem('candidateData') || '{}');
+            
+            const submissionData = {
+                ...candidateData,
+                answer_code: answerCode,
+                submission_time: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/submit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(submissionData)
+                });
+
+                if (response.ok) {
+                    alert('✅ Answer submitted successfully! Thank you for completing the test.');
+                    document.getElementById('answerCode').disabled = true;
+                    document.querySelector('.answer-section button').disabled = true;
+                } else {
+                    alert('Error submitting answer. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Answer recorded locally. Thank you!');
+            }
+        }
+    </script>
+</body>
+</html>
+
