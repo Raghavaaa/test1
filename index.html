@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weyou Internship Screening Test</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Intelligence Compression Round — Weyou Internship Screening Test</h1>
+        </header>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="login-section">
+            <div class="form-group">
+                <label for="candidateName">Candidate Name *</label>
+                <input type="text" id="candidateName" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label for="mobileNumber">Mobile Number *</label>
+                <input type="tel" id="mobileNumber" placeholder="Enter 10-digit mobile number" maxlength="10" required>
+                <span id="mobileError" class="error-message"></span>
+            </div>
+            <button id="startTestBtn" class="btn-primary">Start Test</button>
+        </div>
+
+        <!-- Test Interface -->
+        <div id="testInterface" class="test-section hidden">
+            <div class="timer-container">
+                <div class="timer">
+                    <span id="timerDisplay">20:00</span>
+                </div>
+            </div>
+
+            <form id="testForm">
+                <!-- Section 1 -->
+                <div class="question-section">
+                    <h2>Section 1 – Code Reading</h2>
+                    <p class="question-text">Identify the logical error and give one-line correction.</p>
+                    <pre class="code-block">function calculate_average(scores):
+    total = 0
+    for score in scores:
+        total = total + scores
+    return total / len(scores)</pre>
+                    <textarea id="answer1" placeholder="Your answer here..." required></textarea>
+                </div>
+
+                <!-- Section 2 -->
+                <div class="question-section">
+                    <h2>Section 2 – System Mapping</h2>
+                    <p class="question-text">List 3 major system modules and 2 APIs for an AI assistant for lawyers.</p>
+                    <textarea id="answer2" placeholder="Your answer here..." required></textarea>
+                </div>
+
+                <!-- Section 3 -->
+                <div class="question-section">
+                    <h2>Section 3 – Data Brain</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Time (s)</th>
+                                <th>Output Size (KB)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>101</td>
+                                <td>2.3</td>
+                                <td>210</td>
+                                <td>OK</td>
+                            </tr>
+                            <tr>
+                                <td>102</td>
+                                <td>5.7</td>
+                                <td>190</td>
+                                <td>OK</td>
+                            </tr>
+                            <tr>
+                                <td>103</td>
+                                <td>18.2</td>
+                                <td>25</td>
+                                <td>OK</td>
+                            </tr>
+                            <tr>
+                                <td>104</td>
+                                <td>2.8</td>
+                                <td>205</td>
+                                <td>OK</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="question-text">What anomaly do you notice and probable cause?</p>
+                    <textarea id="answer3" placeholder="Your answer here..." required></textarea>
+                </div>
+
+                <!-- Section 4 -->
+                <div class="question-section">
+                    <h2>Section 4 – Logic Question</h2>
+                    <p class="question-text">Three independent systems each have 10% chance of failure. What's combined reliability if all must function simultaneously?</p>
+                    <textarea id="answer4" placeholder="Your answer here..." required></textarea>
+                </div>
+
+                <!-- Section 5 -->
+                <div class="question-section">
+                    <h2>Section 5 – Micro Decision Case</h2>
+                    <p class="question-text">During a client demo, backend crashes and developer is unavailable for 10 min. What will you do in next 5 minutes?</p>
+                    <textarea id="answer5" placeholder="Your answer here..." required></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-primary">Submit Test</button>
+            </form>
+        </div>
+
+        <!-- Confirmation Message -->
+        <div id="confirmationMessage" class="confirmation hidden">
+            <h2>✓ Submission Recorded Successfully</h2>
+            <p>Thank you for completing the test. Your responses have been recorded.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

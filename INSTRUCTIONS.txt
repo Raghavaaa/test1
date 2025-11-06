@@ -1,0 +1,94 @@
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║              FRONTEND DEPLOYMENT INSTRUCTIONS             ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+
+📦 WHAT'S IN THIS FOLDER
+─────────────────────────────────────────────────────────────
+✅ index.html - Main test page
+✅ script.js - Test logic and API connection
+✅ style.css - Styling
+✅ INSTRUCTIONS.txt - This file
+
+
+🚀 HOW TO DEPLOY (SUPER SIMPLE)
+─────────────────────────────────────────────────────────────
+
+STEP 1: Deploy Backend First
+   → Deploy backend-deploy.zip FIRST
+   → Get your backend URL
+   → Example: https://your-backend.onrender.com
+
+STEP 2: Update script.js
+   → Open script.js in any text editor
+   → Find line 3 that says:
+     const BACKEND_URL = "REPLACE_WITH_YOUR_BACKEND_URL/submit";
+   
+   → Replace with your actual backend URL:
+     const BACKEND_URL = "https://your-backend.onrender.com/submit";
+   
+   → IMPORTANT: Keep /submit at the end!
+   → Save the file
+
+STEP 3: Deploy to Render
+   1. Go to https://render.com
+   2. Login (use same account as backend)
+   3. Click "New +" → "Static Site"
+   4. Select "Deploy from local directory" or connect GitHub
+   5. Upload these 3 files:
+      - index.html
+      - script.js (the one you just edited!)
+      - style.css
+   6. Settings:
+      - Publish directory: . (just a dot)
+      - Build command: (leave empty)
+   7. Click "Create Static Site"
+   8. Wait 1-2 minutes
+   9. Get your URL!
+
+STEP 4: Test It
+   → Open your frontend URL
+   → Enter test name and mobile
+   → Take the test
+   → Submit
+   → Check backend dashboard to see your submission!
+
+
+📱 ALTERNATIVE: DEPLOY TO NETLIFY
+─────────────────────────────────────────────────────────────
+   1. Go to https://netlify.com
+   2. Drag and drop these 3 files directly:
+      - index.html
+      - script.js (after editing backend URL)
+      - style.css
+   3. Done! Get your URL
+
+
+✅ CHECKLIST
+─────────────────────────────────────────────────────────────
+□ Backend deployed FIRST
+□ Got backend URL
+□ Edited script.js with backend URL
+□ Saved script.js
+□ Uploaded all 3 files to Render/Netlify
+□ Got frontend URL
+□ Tested submission
+□ Works!
+
+
+🎯 FINAL RESULT
+─────────────────────────────────────────────────────────────
+Share this URL with candidates:
+https://your-frontend-url.onrender.com
+
+
+❓ NEED HELP?
+─────────────────────────────────────────────────────────────
+If test won't connect to backend:
+→ Check script.js has correct backend URL
+→ Make sure URL ends with /submit
+→ Check backend is running (open backend URL)
+
+═══════════════════════════════════════════════════════════════
+

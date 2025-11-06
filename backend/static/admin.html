@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results Dashboard - Weyou Internship</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+            position: sticky;
+            top: 0;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            background: #e9ecef;
+        }
+
+        th.sortable::after {
+            content: ' ⇅';
+            color: #999;
+        }
+
+        th.sorted-asc::after {
+            content: ' ↑';
+            color: #667eea;
+        }
+
+        th.sorted-desc::after {
+            content: ' ↓';
+            color: #667eea;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .answer-cell {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            color: #667eea;
+        }
+
+        .answer-cell:hover {
+            text-decoration: underline;
+        }
+
+        .time-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .answer-section {
+            margin-bottom: 20px;
+        }
+
+        .answer-section h3 {
+            font-size: 16px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .answer-text {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            color: #333;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #667eea;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            th, td {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Test Results Dashboard</h1>
+            <p>Weyou Internship Screening Test - Real-time Monitoring</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Submissions</h3>
+                <div class="value" id="totalCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Avg Time Taken</h3>
+                <div class="value" id="avgTime">0m</div>
+            </div>
+            <div class="stat-card">
+                <h3>Fastest</h3>
+                <div class="value" id="fastestTime">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Latest</h3>
+                <div class="value" id="latestTime">-</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="refreshData()">🔄 Refresh</button>
+            <button class="btn btn-success" onclick="downloadCSV()">⬇️ Download CSV</button>
+            <div class="auto-refresh">
+                <span>Auto-refresh:</span>
+                <label class="switch">
+                    <input type="checkbox" id="autoRefresh" onchange="toggleAutoRefresh()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search by name or mobile..." onkeyup="filterTable()">
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div id="loadingState" class="loading">
+                <div class="spinner"></div>
+                <p>Loading results...</p>
+            </div>
+            <div id="tableWrapper" class="table-wrapper" style="display: none;">
+                <table id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable" onclick="sortTable(0)">#</th>
+                            <th class="sortable" onclick="sortTable(1)">Name</th>
+                            <th class="sortable" onclick="sortTable(2)">Mobile</th>
+                            <th class="sortable" onclick="sortTable(3)">Submission Time</th>
+                            <th class="sortable" onclick="sortTable(4)">Time Taken</th>
+                            <th>Answers</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                    </tbody>
+                </table>
+            </div>
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <h3>No submissions yet</h3>
+                <p>Candidate submissions will appear here once they complete the test.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for viewing full answers -->
+    <div id="answerModal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="modalTitle">Candidate Answers</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        let allResults = [];
+        let autoRefreshInterval = null;
+        const API_BASE = window.location.origin;
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            refreshData();
+        });
+
+        async function refreshData() {
+            try {
+                const response = await fetch(`${API_BASE}/results`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    allResults = data.results;
+                    updateStats(allResults);
+                    renderTable(allResults);
+                }
+            } catch (error) {
+                console.error('Error fetching results:', error);
+                showError('Failed to load results. Please check if backend is running.');
+            }
+        }
+
+        function updateStats(results) {
+            const totalCount = results.length;
+            document.getElementById('totalCount').textContent = totalCount;
+
+            if (totalCount === 0) {
+                document.getElementById('avgTime').textContent = '0m';
+                document.getElementById('fastestTime').textContent = '-';
+                document.getElementById('latestTime').textContent = '-';
+                return;
+            }
+
+            // Calculate average time
+            const times = results.map(r => parseInt(r.time_taken_seconds) || 0);
+            const avgSeconds = times.reduce((a, b) => a + b, 0) / times.length;
+            document.getElementById('avgTime').textContent = formatDuration(avgSeconds);
+
+            // Fastest time
+            const fastest = Math.min(...times);
+            document.getElementById('fastestTime').textContent = formatDuration(fastest);
+
+            // Latest submission time
+            const latest = results[0]?.submission_time;
+            if (latest) {
+                const date = new Date(latest);
+                document.getElementById('latestTime').textContent = date.toLocaleTimeString();
+            }
+        }
+
+        function renderTable(results) {
+            const loadingState = document.getElementById('loadingState');
+            const tableWrapper = document.getElementById('tableWrapper');
+            const emptyState = document.getElementById('emptyState');
+            const tbody = document.getElementById('resultsBody');
+
+            loadingState.style.display = 'none';
+
+            if (results.length === 0) {
+                tableWrapper.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            tableWrapper.style.display = 'block';
+
+            tbody.innerHTML = results.map((result, index) => {
+                const submissionDate = new Date(result.submission_time);
+                const formattedDate = submissionDate.toLocaleDateString() + ' ' + submissionDate.toLocaleTimeString();
+                const timeTaken = formatDuration(parseInt(result.time_taken_seconds) || 0);
+
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${result.name}</strong></td>
+                        <td>${result.mobile}</td>
+                        <td>${formattedDate}</td>
+                        <td><span class="time-badge">${timeTaken}</span></td>
+                        <td>
+                            <button class="btn btn-primary" onclick='viewAnswers(${JSON.stringify(result).replace(/'/g, "&apos;")})'>
+                                View Answers
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function formatDuration(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}m ${secs}s`;
+        }
+
+        function viewAnswers(result) {
+            const modal = document.getElementById('answerModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+
+            modalTitle.textContent = `${result.name} - Full Answers`;
+
+            const sections = [
+                { title: 'Section 1: Code Reading', answer: result.Q1 },
+                { title: 'Section 2: System Mapping', answer: result.Q2 },
+                { title: 'Section 3: Data Brain', answer: result.Q3 },
+                { title: 'Section 4: Logic Question', answer: result.Q4 },
+                { title: 'Section 5: Micro Decision Case', answer: result.Q5 }
+            ];
+
+            modalBody.innerHTML = sections.map(section => `
+                <div class="answer-section">
+                    <h3>${section.title}</h3>
+                    <div class="answer-text">${section.answer || '<em>No answer provided</em>'}</div>
+                </div>
+            `).join('');
+
+            modal.classList.add('active');
+        }
+
+        function closeModal(event) {
+            if (!event || event.target.id === 'answerModal') {
+                document.getElementById('answerModal').classList.remove('active');
+            }
+        }
+
+        async function downloadCSV() {
+            try {
+                const response = await fetch(`${API_BASE}/results/download`);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.csv_data) {
+                    const blob = new Blob([data.csv_data], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `test-results-${new Date().toISOString().split('T')[0]}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }
+            } catch (error) {
+                console.error('Error downloading CSV:', error);
+                alert('Failed to download CSV');
+            }
+        }
+
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allResults.filter(result => 
+                result.name.toLowerCase().includes(searchTerm) || 
+                result.mobile.includes(searchTerm)
+            );
+            renderTable(filtered);
+        }
+
+        function toggleAutoRefresh() {
+            const checkbox = document.getElementById('autoRefresh');
+            if (checkbox.checked) {
+                autoRefreshInterval = setInterval(refreshData, 10000); // Refresh every 10 seconds
+            } else {
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+            }
+        }
+
+        function sortTable(columnIndex) {
+            // Sorting logic can be enhanced
+            const headers = document.querySelectorAll('th.sortable');
+            const clickedHeader = headers[columnIndex];
+            
+            // Toggle sort direction
+            let isAsc = !clickedHeader.classList.contains('sorted-asc');
+            
+            // Remove all sort classes
+            headers.forEach(h => {
+                h.classList.remove('sorted-asc', 'sorted-desc');
+            });
+            
+            // Add appropriate class
+            clickedHeader.classList.add(isAsc ? 'sorted-asc' : 'sorted-desc');
+            
+            // Sort the results
+            allResults.sort((a, b) => {
+                let aVal, bVal;
+                switch(columnIndex) {
+                    case 1: // Name
+                        aVal = a.name;
+                        bVal = b.name;
+                        break;
+                    case 2: // Mobile
+                        aVal = a.mobile;
+                        bVal = b.mobile;
+                        break;
+                    case 3: // Submission time
+                        aVal = new Date(a.submission_time);
+                        bVal = new Date(b.submission_time);
+                        break;
+                    case 4: // Time taken
+                        aVal = parseInt(a.time_taken_seconds) || 0;
+                        bVal = parseInt(b.time_taken_seconds) || 0;
+                        break;
+                    default:
+                        return 0;
+                }
+                
+                if (aVal < bVal) return isAsc ? -1 : 1;
+                if (aVal > bVal) return isAsc ? 1 : -1;
+                return 0;
+            });
+            
+            renderTable(allResults);
+        }
+
+        function showError(message) {
+            const loadingState = document.getElementById('loadingState');
+            loadingState.innerHTML = `<p style="color: #f44336;">${message}</p>`;
+        }
+
+        // Keyboard shortcut for refresh (R key)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'r' && !e.ctrlKey && !e.metaKey) {
+                const target = e.target;
+                if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+                    refreshData();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
